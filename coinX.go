@@ -28,8 +28,16 @@ func main() {
 	diff1 := koinim.Last_order - bitfinexlast
 	fmt.Println("Diff:", diff1)
 
-}
+	http.HandleFunc("/", displayResult)     // set router
+	err = http.ListenAndServe(":9090", nil) // set listen port
+	if err != nil {
+		fmt.Println("ErrListenAndServe: ", err)
+	}
 
+}
+func displayResult(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Hello !")
+}
 func getKoinim() (Koinim, error) {
 	var koinim Koinim
 

@@ -10,40 +10,118 @@ import (
 
 func main() {
 	requestBundle()
-
 }
 
 func requestBundle() Display {
 	var display Display
-	koinim, err := getKoinim()
-	paribu, err := getParibu()
-	bitfinex, err := getBitfinex()
-	koineks, err := getKoineks()
-	btcturk, err := getBtcturk()
+	btcKoinim, err := getBtcKoinim()
+	ltcKoinim, err := getLtcKoinim()
+	btcParibu, err := getBtcParibu()
+	allKoineks, err := getAllKoineks()
+	allBtcturk, err := getAllBtcturk()
+	btcBitfinex, err := getBtcBitfinex()
+	ltcBitfinex, err := getLtcBitfinex()
+	ethBitfinex, err := getEthBitfinex()
+	rate, err := getUsdTry()
 	if err != nil {
 		return display
 	}
-	bitfinexlast, _ := strconv.ParseFloat(bitfinex.Last_price, 32)
-	diff1 := koinim.Last_order - (bitfinexlast * 3.8)
-	display.Bitfinex_Koinim = diff1 * 100 / (bitfinexlast * 3.8)
-	fmt.Println("KOINIM:", display.Bitfinex_Koinim)
+	
+	currency := rate.Rates.TRY
+	
+	btcKoinimTRY := btcKoinim.Last_order
+	btcParibuTRY := btcParibu.BTC_TL.Last
+	btcKoineksTRY, _ := strconv.ParseFloat(allKoineks.BTC.Current, 64)
+	btcBtcturkTRY := allBtcturk[0].Last
+	btcBitfinexUSD, _ := strconv.ParseFloat(btcBitfinex.Last_price, 64)
+	
+	btcKoinimUSD := btcKoinimTRY / currency
+	btcParibuUSD := btcParibuTRY / currency
+	btcKoineksUSD := btcKoineksTRY / currency
+	btcBtcturkUSD := btcBtcturkTRY / currency	
+	
+	btcBitfinexKoinimGap := btcKoinimUSD - btcBitfinexUSD
+	btcBitfinexParibuGap  := btcParibuUSD - btcBitfinexUSD
+	btcBitfinexKoineksGap := btcKoineksUSD - btcBitfinexUSD	
+	btcBitfinexBtcturkGap := btcBtcturkUSD - btcBitfinexUSD
+	
+	btcBitfinexKoinimGapPercentage := btcBitfinexKoinimGap / btcKoineksUSD * 100
+	btcBitfinexParibuGapPercentage := btcBitfinexParibuGap / btcKoineksUSD * 100
+	btcBitfinexKoineksGapPercentage := btcBitfinexKoineksGap / btcKoineksUSD * 100
+	btcBitfinexBtcturkGapPercentage := btcBitfinexBtcturkGap / btcKoineksUSD * 100
+	
+	
+	
+	ltcKoinimTRY := ltcKoinim.Last_order
+	ltcKoineksTRY, _ := strconv.ParseFloat(allKoineks.LTC.Current, 64)
+	ltcBitfinexUSD, _ := strconv.ParseFloat(ltcBitfinex.Last_price, 64)
+	
+	ltcKoinimUSD := ltcKoinimTRY / currency
+	ltcKoineksUSD := ltcKoineksTRY / currency
+	
+	ltcBitfinexKoinimGap := ltcKoinimUSD - ltcBitfinexUSD
+	ltcBitfinexKoineksGap := ltcKoineksUSD - ltcBitfinexUSD	
+	
+	ltcBitfinexKoinimGapPercentage := ltcBitfinexKoinimGap / ltcKoineksUSD * 100
+	ltcBitfinexKoineksGapPercentage := ltcBitfinexKoineksGap / ltcKoineksUSD * 100
+	
+	
+				
+	ethKoineksTRY, _ := strconv.ParseFloat(allKoineks.ETH.Current, 64)
+	ethBtcturkTRY := allBtcturk[2].Last
+	ethBitfinexUSD, _ := strconv.ParseFloat(ethBitfinex.Last_price, 64)
+	
+	ethKoineksUSD := ethKoineksTRY / currency
+	ethBtcturkUSD := ethBtcturkTRY / currency	
+	
+	ethBitfinexKoineksGap := ethKoineksUSD - ethBitfinexUSD	
+	ethBitfinexBtcturkGap := ethBtcturkUSD - ethBitfinexUSD
+	
+	ethBitfinexKoineksGapPercentage := ethBitfinexKoineksGap / ethBtcturkUSD * 100
+	ethBitfinexBtcturkGapPercentage := ethBitfinexBtcturkGap / ethBtcturkUSD * 100
+				
+				
+	fmt.Println("***\n\t\t\t CURRENCY")
+	fmt.Println("USD/TRY:\t\t", strconv.FormatFloat(currency, 'f', 4, 64), "₺")
+	
+	
+	fmt.Println("***\n\t\t\t PRICE\t\t USD-EQUIVALENT")
+	fmt.Println("BTC (Koinim):\t\t", strconv.FormatFloat(btcKoinimTRY, 'f', 2, 64), "₺\t", strconv.FormatFloat(btcKoinimUSD, 'f', 2, 64), "$")
+	fmt.Println("BTC (Paribu):\t\t", strconv.FormatFloat(btcParibuTRY, 'f', 2, 64), "₺\t", strconv.FormatFloat(btcParibuUSD, 'f', 2, 64), "$")
+	fmt.Println("BTC (Koineks):\t\t", strconv.FormatFloat(btcKoineksTRY, 'f', 2, 64), "₺\t", strconv.FormatFloat(btcKoineksUSD, 'f', 2, 64), "$")
+	fmt.Println("BTC (BTCTurk):\t\t", strconv.FormatFloat(btcBtcturkTRY, 'f', 2, 64), "₺\t", strconv.FormatFloat(btcBtcturkUSD, 'f', 2, 64), "$")
+	fmt.Println("BTC (Bitfinex):\t\t", strconv.FormatFloat(btcBitfinexUSD, 'f', 2, 64), "$\t", strconv.FormatFloat(btcBitfinexUSD, 'f', 2, 64), "$")
 
-	diff2 := paribu.BTC_TL.Last - (bitfinexlast * 3.8)
-	display.Bitfinex_Paribu = diff2 * 100 / (bitfinexlast * 3.8)
-	fmt.Println("PARIBU:", display.Bitfinex_Paribu)
 
-	koineksCurrent, _ := strconv.ParseFloat(koineks.BTC.Current, 64)
-	diff3 := koineksCurrent - (bitfinexlast * 3.8)
-	display.Bitfinex_Koineks = diff3 * 100 / (bitfinexlast * 3.8)
-	fmt.Println("KOINEKS:", display.Bitfinex_Koineks)
+	fmt.Println("---\n\t\t\t GAP\t\t PERCENTAGE")
+	fmt.Println("BTC (Bitfinex/Koinim):\t", strconv.FormatFloat(btcBitfinexKoinimGap, 'f', 2, 64), "$\t", strconv.FormatFloat(btcBitfinexKoinimGapPercentage, 'f', 2, 64), "%")
+	fmt.Println("BTC (Bitfinex/Paribu):\t", strconv.FormatFloat(btcBitfinexParibuGap, 'f', 2, 64), "$\t", strconv.FormatFloat(btcBitfinexParibuGapPercentage, 'f', 2, 64), "%")
+	fmt.Println("BTC (Bitfinex/Koineks):\t", strconv.FormatFloat(btcBitfinexKoineksGap, 'f', 2, 64), "$\t", strconv.FormatFloat(btcBitfinexKoineksGapPercentage, 'f', 2, 64), "%")
+	fmt.Println("BTC (Bitfinex/BTCTurk):\t", strconv.FormatFloat(btcBitfinexBtcturkGap, 'f', 2, 64), "$\t", strconv.FormatFloat(btcBitfinexBtcturkGapPercentage, 'f', 2, 64), "%")
 
-	diff4 := btcturk[0].Last - (bitfinexlast * 3.8)
-	display.Bitfinex_Btcturk = diff4 * 100 / (bitfinexlast * 3.8)
-	fmt.Println("BTCTURK:", display.Bitfinex_Btcturk)
+	fmt.Println("***\n\t\t\t PRICE\t\t USD-EQUIVALENT")
+	fmt.Println("LTC (Koinim):\t\t", strconv.FormatFloat(ltcKoinimTRY, 'f', 2, 64), "₺\t", strconv.FormatFloat(ltcKoinimUSD, 'f', 2, 64), "$")
+	fmt.Println("LTC (Koineks):\t\t", strconv.FormatFloat(ltcKoineksTRY, 'f', 2, 64), "₺\t", strconv.FormatFloat(ltcKoineksUSD, 'f', 2, 64), "$")
+	fmt.Println("LTC (Bitfinex):\t\t", strconv.FormatFloat(ltcBitfinexUSD, 'f', 2, 64), "$\t", strconv.FormatFloat(ltcBitfinexUSD, 'f', 2, 64), "$")
+
+	fmt.Println("---\n\t\t\t GAP\t\t PERCENTAGE")
+	fmt.Println("LTC (Bitfinex/Koinim):\t", strconv.FormatFloat(ltcBitfinexKoinimGap, 'f', 2, 64), "$\t", strconv.FormatFloat(ltcBitfinexKoinimGapPercentage, 'f', 2, 64), "%")
+	fmt.Println("LTC (Bitfinex/Koineks):\t", strconv.FormatFloat(ltcBitfinexKoineksGap, 'f', 2, 64), "$\t", strconv.FormatFloat(ltcBitfinexKoineksGapPercentage, 'f', 2, 64), "%")
+
+	fmt.Println("***\n\t\t\t PRICE\t\t USD-EQUIVALENT")
+	fmt.Println("ETH (Koineks):\t\t", strconv.FormatFloat(ethKoineksTRY, 'f', 2, 64), "₺\t", strconv.FormatFloat(ethKoineksUSD, 'f', 2, 64), "$")
+	fmt.Println("ETH (BTCTurk):\t\t", strconv.FormatFloat(ethBtcturkTRY, 'f', 2, 64), "₺\t", strconv.FormatFloat(ethBtcturkUSD, 'f', 2, 64), "$")
+	fmt.Println("ETH (Bitfinex):\t\t", strconv.FormatFloat(ethBitfinexUSD, 'f', 2, 64), "$\t", strconv.FormatFloat(ethBitfinexUSD, 'f', 2, 64), "$")
+
+	fmt.Println("---\n\t\t\t GAP\t\t PERCENTAGE")
+	fmt.Println("ETH (Bitfinex/Koineks):\t", strconv.FormatFloat(ethBitfinexKoineksGap, 'f', 2, 64), "$\t", strconv.FormatFloat(ethBitfinexKoineksGapPercentage, 'f', 2, 64), "%")
+	fmt.Println("ETH (Bitfinex/BTCTurk):\t", strconv.FormatFloat(ethBitfinexBtcturkGap, 'f', 2, 64), "$\t", strconv.FormatFloat(ethBitfinexBtcturkGapPercentage, 'f', 2, 64), "%")
+	fmt.Println("***")
 
 	return display
 }
-func getKoinim() (Koinim, error) {
+
+func getBtcKoinim() (Koinim, error) {
 	var koinim Koinim
 
 	resp, err := http.Get("https://koinim.com/ticker")
@@ -66,7 +144,32 @@ func getKoinim() (Koinim, error) {
 	//fmt.Println("KJson:", koinim)
 	return koinim, nil
 }
-func getParibu() (ParibuTop, error) {
+
+func getLtcKoinim() (Koinim, error) {
+	var koinim Koinim
+
+	resp, err := http.Get("https://koinim.com/ticker/ltc/")
+	if err != nil {
+		fmt.Println("KError1:", err)
+		return koinim, err
+	}
+	//fmt.Println("Resp:", resp)
+	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println("KError2:", err)
+		return koinim, err
+	}
+	//fmt.Println("Body:", string(bodyBytes))
+	err = json.Unmarshal(bodyBytes, &koinim)
+	if err != nil {
+		fmt.Println("KError3:", err)
+		return koinim, err
+	}
+	//fmt.Println("KJson:", koinim)
+	return koinim, nil
+}
+
+func getBtcParibu() (ParibuTop, error) {
 	var paribu ParibuTop
 
 	resp, err := http.Get("https://www.paribu.com/ticker")
@@ -89,7 +192,8 @@ func getParibu() (ParibuTop, error) {
 	//fmt.Println("PJson:", paribu)
 	return paribu, nil
 }
-func getBitfinex() (Bitfinex, error) {
+
+func getBtcBitfinex() (Bitfinex, error) {
 	var bitfinex Bitfinex
 
 	resp, err := http.Get("https://api.bitfinex.com/v1/pubticker/btcusd")
@@ -112,31 +216,56 @@ func getBitfinex() (Bitfinex, error) {
 	//fmt.Println("BJson:", bitfinex)
 	return bitfinex, nil
 }
-func getUsdTry() (Rate, error) {
-	var rate Rate
 
-	resp, err := http.Get("https://api.fixer.io/latest?base=USD&symbols=TRY")
+func getLtcBitfinex() (Bitfinex, error) {
+	var bitfinex Bitfinex
+
+	resp, err := http.Get("https://api.bitfinex.com/v1/pubticker/ltcusd")
 	if err != nil {
-		fmt.Println("RError1:", err)
-		return rate, err
+		fmt.Println("BError1:", err)
+		return bitfinex, err
 	}
 	//fmt.Println("Resp:", resp)
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		fmt.Println("RError2:", err)
-		return rate, err
+		fmt.Println("BError2:", err)
+		return bitfinex, err
 	}
-	fmt.Println("Body:", string(bodyBytes))
-	err = json.Unmarshal(bodyBytes, &rate)
+	//fmt.Println("Body:", string(bodyBytes))
+	err = json.Unmarshal(bodyBytes, &bitfinex)
 	if err != nil {
-		fmt.Println("RError3:", err)
-		return rate, err
+		fmt.Println("BError3:", err)
+		return bitfinex, err
 	}
-	fmt.Println("RJson:", rate)
-	return rate, nil
+	//fmt.Println("BJson:", bitfinex)
+	return bitfinex, nil
 }
 
-func getKoineks() (KoineksTop, error) {
+func getEthBitfinex() (Bitfinex, error) {
+	var bitfinex Bitfinex
+
+	resp, err := http.Get("https://api.bitfinex.com/v1/pubticker/ethusd")
+	if err != nil {
+		fmt.Println("BError1:", err)
+		return bitfinex, err
+	}
+	//fmt.Println("Resp:", resp)
+	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println("BError2:", err)
+		return bitfinex, err
+	}
+	//fmt.Println("Body:", string(bodyBytes))
+	err = json.Unmarshal(bodyBytes, &bitfinex)
+	if err != nil {
+		fmt.Println("BError3:", err)
+		return bitfinex, err
+	}
+	//fmt.Println("BJson:", bitfinex)
+	return bitfinex, nil
+}
+
+func getAllKoineks() (KoineksTop, error) {
 	var koineks KoineksTop
 
 	resp, err := http.Get("https://koineks.com/ticker")
@@ -160,7 +289,7 @@ func getKoineks() (KoineksTop, error) {
 	return koineks, nil
 }
 
-func getBtcturk() ([]Btcturk, error) {
+func getAllBtcturk() ([]Btcturk, error) {
 	//var btcturk BtcturkTop
 	btcturk := make([]Btcturk, 0)
 	resp, err := http.Get("https://www.btcturk.com/api/ticker")
@@ -180,6 +309,30 @@ func getBtcturk() ([]Btcturk, error) {
 		fmt.Println("BTError3:", err)
 		return btcturk, err
 	}
-	fmt.Println("BTJson:", btcturk)
+	//fmt.Println("BTJson:", btcturk)
 	return btcturk, nil
+}
+
+func getUsdTry() (UsdTry, error) {
+	var rate UsdTry
+
+	resp, err := http.Get("https://api.fixer.io/latest?base=USD&symbols=TRY")
+	if err != nil {
+		fmt.Println("RError1:", err)
+		return rate, err
+	}
+	//fmt.Println("Resp:", resp)
+	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println("RError2:", err)
+		return rate, err
+	}
+	//fmt.Println("Body:", string(bodyBytes))
+	err = json.Unmarshal(bodyBytes, &rate)
+	if err != nil {
+		fmt.Println("RError3:", err)
+		return rate, err
+	}
+	//fmt.Println("RJson:", rate)
+	return rate, nil
 }

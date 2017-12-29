@@ -1,5 +1,23 @@
 package main
 
+
+type Display struct {
+	Bitfinex_Koinim  float64
+	Bitfinex_Paribu  float64
+	Bitfinex_Koineks float64
+	Bitfinex_Btcturk float64
+}
+
+type Rate struct {
+	TRY float64
+}
+
+type UsdTry struct {
+	Base  string
+	Date  string
+	Rates Rate
+}
+
 type Koinim struct {
 	Sell        float64
 	High        float64
@@ -17,6 +35,7 @@ type Koinim struct {
 type ParibuTop struct {
 	BTC_TL Paribu
 }
+
 type Paribu struct {
 	Last          float64
 	LowestAsk     float64
@@ -38,19 +57,12 @@ type Bitfinex struct {
 	Timestamp  string
 }
 
-type Display struct {
-	Bitfinex_Koinim  float64
-	Bitfinex_Paribu  float64
-	Bitfinex_Koineks float64
-	Bitfinex_Btcturk float64
-}
-type Rate struct {
-	TRY float64
-}
-type UsdTry struct {
-	Base  string
-	Date  string
-	Rates Rate
+type KoineksTop struct {
+	BTC  Koineks
+	ETH  Koineks
+	LTC  Koineks
+	DASH Koineks
+	DOGE Koineks
 }
 
 type Koineks struct {
@@ -66,14 +78,6 @@ type Koineks struct {
 	Ask               string
 	Bid               string
 	Timestamp         string
-}
-
-type KoineksTop struct {
-	BTC  Koineks
-	ETH  Koineks
-	LTC  Koineks
-	DASH Koineks
-	DOGE Koineks
 }
 
 type Btcturk struct {

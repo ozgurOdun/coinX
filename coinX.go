@@ -27,16 +27,33 @@ func main() {
 	bitfinexlast, _ := strconv.ParseFloat(bitfinex.Last_price, 32)
 	diff1 := koinim.Last_order - bitfinexlast
 	fmt.Println("Diff:", diff1)
-
-	http.HandleFunc("/", displayResult)     // set router
-	err = http.ListenAndServe(":9090", nil) // set listen port
+	rate, err := getUsdTry()
 	if err != nil {
-		fmt.Println("ErrListenAndServe: ", err)
+		return
 	}
+	fmt.Println("RJson2:", rate)
+	//requestBundle()
 
 }
-func displayResult(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello !")
+
+func requestBundle() Display {
+	var display Display
+	koinim, err := getKoinim()
+	paribu, err := getParibu()
+	bitfinex, err := getBitfinex()
+	if err != nil {
+		return display
+	}
+	bitfinexlast, _ := strconv.ParseFloat(bitfinex.Last_price, 32)
+	diff1 := koinim.Last_order - (bitfinexlast * 3.8)
+	display.Bitfinex_Koinim = diff1 / (bitfinexlast * 3.8)
+	fmt.Println("Rate:", display.Bitfinex_Koinim)
+
+	diff2 := paribu.BTC_TL.Last - (bitfinexlast * 3.8)
+	display.Bitfinex_Paribu = diff2 / (bitfinexlast * 3.8)
+	fmt.Println("Rate:", display.Bitfinex_Paribu)
+
+	return display
 }
 func getKoinim() (Koinim, error) {
 	var koinim Koinim
@@ -46,19 +63,19 @@ func getKoinim() (Koinim, error) {
 		fmt.Println("KError1:", err)
 		return koinim, err
 	}
-	fmt.Println("Resp:", resp)
+	//fmt.Println("Resp:", resp)
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println("KError2:", err)
 		return koinim, err
 	}
-	fmt.Println("Body:", string(bodyBytes))
+	//fmt.Println("Body:", string(bodyBytes))
 	err = json.Unmarshal(bodyBytes, &koinim)
 	if err != nil {
 		fmt.Println("KError3:", err)
 		return koinim, err
 	}
-	fmt.Println("KJson:", koinim)
+	//fmt.Println("KJson:", koinim)
 	return koinim, nil
 }
 func getParibu() (ParibuTop, error) {
@@ -69,19 +86,19 @@ func getParibu() (ParibuTop, error) {
 		fmt.Println("PError1:", err)
 		return paribu, err
 	}
-	fmt.Println("Resp:", resp)
+	//fmt.Println("Resp:", resp)
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println("PError2:", err)
 		return paribu, err
 	}
-	fmt.Println("Body:", string(bodyBytes))
+	//fmt.Println("Body:", string(bodyBytes))
 	err = json.Unmarshal(bodyBytes, &paribu)
 	if err != nil {
 		fmt.Println("PError3:", err)
 		return paribu, err
 	}
-	fmt.Println("PJson:", paribu)
+	//fmt.Println("PJson:", paribu)
 	return paribu, nil
 }
 func getBitfinex() (Bitfinex, error) {
@@ -92,18 +109,41 @@ func getBitfinex() (Bitfinex, error) {
 		fmt.Println("BError1:", err)
 		return bitfinex, err
 	}
-	fmt.Println("Resp:", resp)
+	//fmt.Println("Resp:", resp)
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println("BError2:", err)
 		return bitfinex, err
 	}
-	fmt.Println("Body:", string(bodyBytes))
+	//fmt.Println("Body:", string(bodyBytes))
 	err = json.Unmarshal(bodyBytes, &bitfinex)
 	if err != nil {
 		fmt.Println("BError3:", err)
 		return bitfinex, err
 	}
-	fmt.Println("BJson:", bitfinex)
+	//fmt.Println("BJson:", bitfinex)
 	return bitfinex, nil
+}
+func getUsdTry() (Rate, error) {
+	var rate Rate
+
+	resp, err := http.Get("https://api.fixer.io/latest?base=USD&symbols=TRY")
+	if err != nil {
+		fmt.Println("RError1:", err)
+		return rate, err
+	}
+	//fmt.Println("Resp:", resp)
+	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println("RError2:", err)
+		return rate, err
+	}
+	fmt.Println("Body:", string(bodyBytes))
+	err = json.Unmarshal(bodyBytes, &rate)
+	if err != nil {
+		fmt.Println("RError3:", err)
+		return rate, err
+	}
+	fmt.Println("RJson:", rate)
+	return rate, nil
 }

@@ -37,3 +37,16 @@ type Bitfinex struct {
 	Volume     string
 	Timestamp  string
 }
+
+type Display struct {
+	Bitfinex_Koinim float64
+	Bitfinex_Paribu float64
+}
+type Rate struct {
+	TRY float64
+}
+type UsdTry struct {
+	Base  string
+	Date  string
+	Rates Rate
+}

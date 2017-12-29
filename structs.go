@@ -1,6 +1,5 @@
 package main
 
-
 type Display struct {
 	Bitfinex_Koinim  float64
 	Bitfinex_Paribu  float64
@@ -91,4 +90,16 @@ type Btcturk struct {
 	Ask       float64
 	Open      float64
 	Average   float64
+}
+
+type Bitstamp struct {
+	High      string
+	Last      string
+	Timestamp string
+	Bid       string
+	Vwap      string
+	Volume    string
+	Low       string
+	Ask       string
+	Open      string
 }

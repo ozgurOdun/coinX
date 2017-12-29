@@ -39,8 +39,10 @@ type Bitfinex struct {
 }
 
 type Display struct {
-	Bitfinex_Koinim float64
-	Bitfinex_Paribu float64
+	Bitfinex_Koinim  float64
+	Bitfinex_Paribu  float64
+	Bitfinex_Koineks float64
+	Bitfinex_Btcturk float64
 }
 type Rate struct {
 	TRY float64
@@ -49,4 +51,40 @@ type UsdTry struct {
 	Base  string
 	Date  string
 	Rates Rate
+}
+
+type Koineks struct {
+	Short_code        string
+	Name              string
+	Currency          string
+	Current           string
+	Change_amount     string
+	Change_percentage string
+	High              string
+	Low               string
+	Volume            float64
+	Ask               string
+	Bid               string
+	Timestamp         string
+}
+
+type KoineksTop struct {
+	BTC  Koineks
+	ETH  Koineks
+	LTC  Koineks
+	DASH Koineks
+	DOGE Koineks
+}
+
+type Btcturk struct {
+	Pair      string
+	High      float64
+	Last      float64
+	Timestamp float64
+	Bid       float64
+	Volume    float64
+	Low       float64
+	Ask       float64
+	Open      float64
+	Average   float64
 }

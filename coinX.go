@@ -9,30 +9,7 @@ import (
 )
 
 func main() {
-	koinim, err := getKoinim()
-	if err != nil {
-		return
-	}
-	fmt.Println("KJson2:", koinim)
-	paribu, err := getParibu()
-	if err != nil {
-		return
-	}
-	fmt.Println("PJson2:", paribu)
-	bitfinex, err := getBitfinex()
-	if err != nil {
-		return
-	}
-	fmt.Println("BJson2:", bitfinex)
-	bitfinexlast, _ := strconv.ParseFloat(bitfinex.Last_price, 32)
-	diff1 := koinim.Last_order - bitfinexlast
-	fmt.Println("Diff:", diff1)
-	rate, err := getUsdTry()
-	if err != nil {
-		return
-	}
-	fmt.Println("RJson2:", rate)
-	//requestBundle()
+	requestBundle()
 
 }
 
@@ -41,17 +18,28 @@ func requestBundle() Display {
 	koinim, err := getKoinim()
 	paribu, err := getParibu()
 	bitfinex, err := getBitfinex()
+	koineks, err := getKoineks()
+	btcturk, err := getBtcturk()
 	if err != nil {
 		return display
 	}
 	bitfinexlast, _ := strconv.ParseFloat(bitfinex.Last_price, 32)
 	diff1 := koinim.Last_order - (bitfinexlast * 3.8)
-	display.Bitfinex_Koinim = diff1 / (bitfinexlast * 3.8)
-	fmt.Println("Rate:", display.Bitfinex_Koinim)
+	display.Bitfinex_Koinim = diff1 * 100 / (bitfinexlast * 3.8)
+	fmt.Println("KOINIM:", display.Bitfinex_Koinim)
 
 	diff2 := paribu.BTC_TL.Last - (bitfinexlast * 3.8)
-	display.Bitfinex_Paribu = diff2 / (bitfinexlast * 3.8)
-	fmt.Println("Rate:", display.Bitfinex_Paribu)
+	display.Bitfinex_Paribu = diff2 * 100 / (bitfinexlast * 3.8)
+	fmt.Println("PARIBU:", display.Bitfinex_Paribu)
+
+	koineksCurrent, _ := strconv.ParseFloat(koineks.BTC.Current, 64)
+	diff3 := koineksCurrent - (bitfinexlast * 3.8)
+	display.Bitfinex_Koineks = diff3 * 100 / (bitfinexlast * 3.8)
+	fmt.Println("KOINEKS:", display.Bitfinex_Koineks)
+
+	diff4 := btcturk[0].Last - (bitfinexlast * 3.8)
+	display.Bitfinex_Btcturk = diff4 * 100 / (bitfinexlast * 3.8)
+	fmt.Println("BTCTURK:", display.Bitfinex_Btcturk)
 
 	return display
 }
@@ -146,4 +134,52 @@ func getUsdTry() (Rate, error) {
 	}
 	fmt.Println("RJson:", rate)
 	return rate, nil
+}
+
+func getKoineks() (KoineksTop, error) {
+	var koineks KoineksTop
+
+	resp, err := http.Get("https://koineks.com/ticker")
+	if err != nil {
+		fmt.Println("XError1:", err)
+		return koineks, err
+	}
+	//fmt.Println("Resp:", resp)
+	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println("XError2:", err)
+		return koineks, err
+	}
+	//fmt.Println("Body:", string(bodyBytes))
+	err = json.Unmarshal(bodyBytes, &koineks)
+	if err != nil {
+		fmt.Println("XError3:", err)
+		return koineks, err
+	}
+	//fmt.Println("XJson:", koineks)
+	return koineks, nil
+}
+
+func getBtcturk() ([]Btcturk, error) {
+	//var btcturk BtcturkTop
+	btcturk := make([]Btcturk, 0)
+	resp, err := http.Get("https://www.btcturk.com/api/ticker")
+	if err != nil {
+		fmt.Println("BTError1:", err)
+		return btcturk, err
+	}
+	//fmt.Println("Resp:", resp)
+	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println("BTError2:", err)
+		return btcturk, err
+	}
+	//fmt.Println("Body:", string(bodyBytes))
+	err = json.Unmarshal(bodyBytes, &btcturk)
+	if err != nil {
+		fmt.Println("BTError3:", err)
+		return btcturk, err
+	}
+	fmt.Println("BTJson:", btcturk)
+	return btcturk, nil
 }

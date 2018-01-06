@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
+	"math"
 )
 
 func main() {
@@ -52,15 +53,29 @@ func requestBundle() Display {
 	btcBitstampParibuGap := btcParibuUSD - btcBitstampUSD
 	btcBitstampKoineksGap := btcKoineksUSD - btcBitstampUSD
 	btcBitstampBtcturkGap := btcBtcturkUSD - btcBitstampUSD
-
-	btcBitfinexKoinimGapPercentage := btcBitfinexKoinimGap / btcKoineksUSD * 100
-	btcBitfinexParibuGapPercentage := btcBitfinexParibuGap / btcKoineksUSD * 100
-	btcBitfinexKoineksGapPercentage := btcBitfinexKoineksGap / btcKoineksUSD * 100
-	btcBitfinexBtcturkGapPercentage := btcBitfinexBtcturkGap / btcKoineksUSD * 100
-	btcBitstampKoinimGapPercentage := btcBitstampKoinimGap / btcKoineksUSD * 100
-	btcBitstampParibuGapPercentage := btcBitstampParibuGap / btcKoineksUSD * 100
-	btcBitstampKoineksGapPercentage := btcBitstampKoineksGap / btcKoineksUSD * 100
-	btcBitstampBtcturkGapPercentage := btcBitstampBtcturkGap / btcKoineksUSD * 100
+	
+	btcBitfinexKoinimGapPercentage := btcBitfinexKoinimGap / math.Min(btcBitfinexUSD, btcKoinimUSD) * 100
+	btcBitfinexParibuGapPercentage := btcBitfinexParibuGap / math.Min(btcBitfinexUSD, btcParibuUSD) * 100
+	btcBitfinexKoineksGapPercentage := btcBitfinexKoineksGap / math.Min(btcBitfinexUSD, btcKoineksUSD) * 100
+	btcBitfinexBtcturkGapPercentage := btcBitfinexBtcturkGap / math.Min(btcBitfinexUSD, btcBtcturkUSD) * 100
+	btcBitstampKoinimGapPercentage := btcBitstampKoinimGap / math.Min(btcBitstampUSD, btcKoinimUSD) * 100
+	btcBitstampParibuGapPercentage := btcBitstampParibuGap / math.Min(btcBitstampUSD, btcParibuUSD) * 100
+	btcBitstampKoineksGapPercentage := btcBitstampKoineksGap / math.Min(btcBitstampUSD, btcKoineksUSD) * 100
+	btcBitstampBtcturkGapPercentage := btcBitstampBtcturkGap / math.Min(btcBitstampUSD, btcBtcturkUSD) * 100
+	
+	btcKoinimParibuGapTRY := btcKoinimTRY - btcParibuTRY
+	btcKoinimKoineksGapTRY := btcKoinimTRY - btcKoineksTRY
+	btcKoinimBtcturkGapTRY := btcKoinimTRY - btcBtcturkTRY
+	btcParibuKoineksGapTRY := btcParibuTRY - btcKoineksTRY
+	btcParibuBtcturkGapTRY := btcParibuTRY - btcBtcturkTRY	
+	btcKoineksBtcturkGapTRY := btcKoineksTRY - btcBtcturkTRY	
+	
+	btcKoinimParibuGapPercentageTRY := btcKoinimParibuGapTRY / math.Min(btcKoinimTRY, btcParibuTRY) * 100
+	btcKoinimKoineksGapPercentageTRY := btcKoinimKoineksGapTRY / math.Min(btcKoinimTRY, btcKoineksTRY) * 100
+	btcKoinimBtcturkGapPercentageTRY := btcKoinimBtcturkGapTRY / math.Min(btcKoinimTRY, btcBtcturkTRY) * 100
+	btcParibuKoineksGapPercentageTRY := btcParibuKoineksGapTRY / math.Min(btcParibuTRY, btcKoineksTRY) * 100
+	btcParibuBtcturkGapPercentageTRY := btcParibuBtcturkGapTRY / math.Min(btcParibuTRY, btcBtcturkTRY) * 100
+	btcKoineksBtcturkGapPercentageTRY := btcKoineksBtcturkGapTRY / math.Min(btcKoineksTRY, btcBtcturkTRY) * 100
 
 	ltcKoinimTRY := ltcKoinim.Last_order
 	ltcKoineksTRY, _ := strconv.ParseFloat(allKoineks.LTC.Current, 64)
@@ -75,10 +90,13 @@ func requestBundle() Display {
 	ltcBitstampKoinimGap := ltcKoinimUSD - ltcBitstampUSD
 	ltcBitstampKoineksGap := ltcKoineksUSD - ltcBitstampUSD
 
-	ltcBitfinexKoinimGapPercentage := ltcBitfinexKoinimGap / ltcKoineksUSD * 100
-	ltcBitfinexKoineksGapPercentage := ltcBitfinexKoineksGap / ltcKoineksUSD * 100
-	ltcBitstampKoinimGapPercentage := ltcBitstampKoinimGap / ltcKoineksUSD * 100
-	ltcBitstampKoineksGapPercentage := ltcBitstampKoineksGap / ltcKoineksUSD * 100
+	ltcBitfinexKoinimGapPercentage := ltcBitfinexKoinimGap / math.Min(ltcBitfinexUSD, ltcKoinimUSD) * 100
+	ltcBitfinexKoineksGapPercentage := ltcBitfinexKoineksGap / math.Min(ltcBitfinexUSD, ltcKoineksUSD) * 100
+	ltcBitstampKoinimGapPercentage := ltcBitstampKoinimGap / math.Min(ltcBitstampUSD, ltcKoinimUSD) * 100
+	ltcBitstampKoineksGapPercentage := ltcBitstampKoineksGap / math.Min(ltcBitstampUSD, ltcKoineksUSD) * 100
+
+	ltcKoinimKoineksGapTRY := ltcKoinimTRY - ltcKoineksTRY
+	ltcKoinimKoineksGapPercentageTRY := ltcKoinimKoineksGapTRY / math.Min(ltcKoinimTRY, ltcKoineksTRY) * 100
 
 	ethKoineksTRY, _ := strconv.ParseFloat(allKoineks.ETH.Current, 64)
 	ethBtcturkTRY := allBtcturk[2].Last
@@ -93,10 +111,14 @@ func requestBundle() Display {
 	ethBitstampKoineksGap := ethKoineksUSD - ethBitstampUSD
 	ethBitstampBtcturkGap := ethBtcturkUSD - ethBitstampUSD
 
-	ethBitfinexKoineksGapPercentage := ethBitfinexKoineksGap / ethBtcturkUSD * 100
-	ethBitfinexBtcturkGapPercentage := ethBitfinexBtcturkGap / ethBtcturkUSD * 100
-	ethBitstampKoineksGapPercentage := ethBitstampKoineksGap / ethBtcturkUSD * 100
-	ethBitstampBtcturkGapPercentage := ethBitstampBtcturkGap / ethBtcturkUSD * 100
+	ethBitfinexKoineksGapPercentage := ethBitfinexKoineksGap / math.Min(ethBitfinexUSD, ethKoineksUSD) * 100
+	ethBitfinexBtcturkGapPercentage := ethBitfinexBtcturkGap / math.Min(ethBitfinexUSD, ethBtcturkUSD) * 100
+	ethBitstampKoineksGapPercentage := ethBitstampKoineksGap / math.Min(ethBitstampUSD, ethKoineksUSD) * 100
+	ethBitstampBtcturkGapPercentage := ethBitstampBtcturkGap / math.Min(ethBitstampUSD, ethBtcturkUSD) * 100
+	
+	ethKoineksBtcturkGapTRY := ethKoineksTRY - ethBtcturkTRY
+	ethKoineksBtcturkGapPercentageTRY := ethKoineksBtcturkGapTRY / math.Min(ethKoineksTRY, ethBtcturkTRY) * 100
+		
 
 	fmt.Println("***\n\t\t\t CURRENCY")
 	fmt.Println("USD/TRY:\t\t", strconv.FormatFloat(currency, 'f', 4, 64), "₺")
@@ -110,14 +132,22 @@ func requestBundle() Display {
 	fmt.Println("BTC (Bitstamp):\t\t", strconv.FormatFloat(btcBitstampUSD, 'f', 2, 64), "$\t", strconv.FormatFloat(btcBitstampUSD, 'f', 2, 64), "$")
 
 	fmt.Println("---\n\t\t\t GAP\t\t PERCENTAGE")
-	fmt.Println("BTC (Bitfinex/Koinim):\t", strconv.FormatFloat(btcBitfinexKoinimGap, 'f', 2, 64), "$\t", strconv.FormatFloat(btcBitfinexKoinimGapPercentage, 'f', 2, 64), "%")
-	fmt.Println("BTC (Bitfinex/Paribu):\t", strconv.FormatFloat(btcBitfinexParibuGap, 'f', 2, 64), "$\t", strconv.FormatFloat(btcBitfinexParibuGapPercentage, 'f', 2, 64), "%")
-	fmt.Println("BTC (Bitfinex/Koineks):\t", strconv.FormatFloat(btcBitfinexKoineksGap, 'f', 2, 64), "$\t", strconv.FormatFloat(btcBitfinexKoineksGapPercentage, 'f', 2, 64), "%")
-	fmt.Println("BTC (Bitfinex/BTCTurk):\t", strconv.FormatFloat(btcBitfinexBtcturkGap, 'f', 2, 64), "$\t", strconv.FormatFloat(btcBitfinexBtcturkGapPercentage, 'f', 2, 64), "%")
-	fmt.Println("BTC (Bitstamp/Koinim):\t", strconv.FormatFloat(btcBitstampKoinimGap, 'f', 2, 64), "$\t", strconv.FormatFloat(btcBitstampKoinimGapPercentage, 'f', 2, 64), "%")
-	fmt.Println("BTC (Bitstamp/Paribu):\t", strconv.FormatFloat(btcBitstampParibuGap, 'f', 2, 64), "$\t", strconv.FormatFloat(btcBitstampParibuGapPercentage, 'f', 2, 64), "%")
-	fmt.Println("BTC (Bitstamp/Koineks):\t", strconv.FormatFloat(btcBitstampKoineksGap, 'f', 2, 64), "$\t", strconv.FormatFloat(btcBitstampKoineksGapPercentage, 'f', 2, 64), "%")
-	fmt.Println("BTC (Bitstamp/BTCTurk):\t", strconv.FormatFloat(btcBitstampBtcturkGap, 'f', 2, 64), "$\t", strconv.FormatFloat(btcBitstampBtcturkGapPercentage, 'f', 2, 64), "%")
+	fmt.Println("BTC (Bitfinex/Koinim):\t", fmt.Sprintf("%+.2f", btcBitfinexKoinimGap), "$\t", fmt.Sprintf("%+.2f", btcBitfinexKoinimGapPercentage), "%")
+	fmt.Println("BTC (Bitfinex/Paribu):\t", fmt.Sprintf("%+.2f", btcBitfinexParibuGap), "$\t", fmt.Sprintf("%+.2f", btcBitfinexParibuGapPercentage), "%")
+	fmt.Println("BTC (Bitfinex/Koineks):\t", fmt.Sprintf("%+.2f", btcBitfinexKoineksGap), "$\t", fmt.Sprintf("%+.2f", btcBitfinexKoineksGapPercentage), "%")
+	fmt.Println("BTC (Bitfinex/BTCTurk):\t", fmt.Sprintf("%+.2f", btcBitfinexBtcturkGap), "$\t", fmt.Sprintf("%+.2f", btcBitfinexBtcturkGapPercentage), "%")
+	fmt.Println("BTC (Bitstamp/Koinim):\t", fmt.Sprintf("%+.2f", btcBitstampKoinimGap), "$\t", fmt.Sprintf("%+.2f", btcBitstampKoinimGapPercentage), "%")
+	fmt.Println("BTC (Bitstamp/Paribu):\t", fmt.Sprintf("%+.2f", btcBitstampParibuGap), "$\t", fmt.Sprintf("%+.2f", btcBitstampParibuGapPercentage), "%")
+	fmt.Println("BTC (Bitstamp/Koineks):\t", fmt.Sprintf("%+.2f", btcBitstampKoineksGap), "$\t", fmt.Sprintf("%+.2f", btcBitstampKoineksGapPercentage), "%")
+	fmt.Println("BTC (Bitstamp/BTCTurk):\t", fmt.Sprintf("%+.2f", btcBitstampBtcturkGap), "$\t", fmt.Sprintf("%+.2f", btcBitstampBtcturkGapPercentage), "%")
+
+	fmt.Println("---")
+	fmt.Println("BTC (Koinim/Paribu):\t", fmt.Sprintf("%+.2f", btcKoinimParibuGapTRY), "₺\t", fmt.Sprintf("%+.2f", btcKoinimParibuGapPercentageTRY), "%")
+	fmt.Println("BTC (Koinim/Koineks):\t", fmt.Sprintf("%+.2f", btcKoinimKoineksGapTRY), "₺\t", fmt.Sprintf("%+.2f", btcKoinimKoineksGapPercentageTRY), "%")
+	fmt.Println("BTC (Koinim/BTCTurk):\t", fmt.Sprintf("%+.2f", btcKoinimBtcturkGapTRY), "₺\t", fmt.Sprintf("%+.2f", btcKoinimBtcturkGapPercentageTRY), "%")
+	fmt.Println("BTC (Paribu/Koineks):\t", fmt.Sprintf("%+.2f", btcParibuKoineksGapTRY), "₺\t", fmt.Sprintf("%+.2f", btcParibuKoineksGapPercentageTRY), "%")
+	fmt.Println("BTC (Paribu/BTCTurk):\t", fmt.Sprintf("%+.2f", btcParibuBtcturkGapTRY), "₺\t", fmt.Sprintf("%+.2f", btcParibuBtcturkGapPercentageTRY), "%")
+	fmt.Println("BTC (Koineks/BTCTurk):\t", fmt.Sprintf("%+.2f", btcKoineksBtcturkGapTRY), "₺\t", fmt.Sprintf("%+.2f", btcKoineksBtcturkGapPercentageTRY), "%")
 
 	fmt.Println("***\n\t\t\t PRICE\t\t USD-EQUIVALENT")
 	fmt.Println("LTC (Koinim):\t\t", strconv.FormatFloat(ltcKoinimTRY, 'f', 2, 64), "₺\t", strconv.FormatFloat(ltcKoinimUSD, 'f', 2, 64), "$")
@@ -126,10 +156,13 @@ func requestBundle() Display {
 	fmt.Println("LTC (Bitstamp):\t\t", strconv.FormatFloat(ltcBitstampUSD, 'f', 2, 64), "$\t", strconv.FormatFloat(ltcBitstampUSD, 'f', 2, 64), "$")
 
 	fmt.Println("---\n\t\t\t GAP\t\t PERCENTAGE")
-	fmt.Println("LTC (Bitfinex/Koinim):\t", strconv.FormatFloat(ltcBitfinexKoinimGap, 'f', 2, 64), "$\t", strconv.FormatFloat(ltcBitfinexKoinimGapPercentage, 'f', 2, 64), "%")
-	fmt.Println("LTC (Bitfinex/Koineks):\t", strconv.FormatFloat(ltcBitfinexKoineksGap, 'f', 2, 64), "$\t", strconv.FormatFloat(ltcBitfinexKoineksGapPercentage, 'f', 2, 64), "%")
-	fmt.Println("LTC (Bitstamp/Koinim):\t", strconv.FormatFloat(ltcBitstampKoinimGap, 'f', 2, 64), "$\t", strconv.FormatFloat(ltcBitstampKoinimGapPercentage, 'f', 2, 64), "%")
-	fmt.Println("LTC (Bitstamp/Koineks):\t", strconv.FormatFloat(ltcBitstampKoineksGap, 'f', 2, 64), "$\t", strconv.FormatFloat(ltcBitstampKoineksGapPercentage, 'f', 2, 64), "%")
+	fmt.Println("LTC (Bitfinex/Koinim):\t", fmt.Sprintf("%+.2f", ltcBitfinexKoinimGap), "$\t", fmt.Sprintf("%+.2f", ltcBitfinexKoinimGapPercentage), "%")
+	fmt.Println("LTC (Bitfinex/Koineks):\t", fmt.Sprintf("%+.2f", ltcBitfinexKoineksGap), "$\t", fmt.Sprintf("%+.2f", ltcBitfinexKoineksGapPercentage), "%")
+	fmt.Println("LTC (Bitstamp/Koinim):\t", fmt.Sprintf("%+.2f", ltcBitstampKoinimGap), "$\t", fmt.Sprintf("%+.2f", ltcBitstampKoinimGapPercentage), "%")
+	fmt.Println("LTC (Bitstamp/Koineks):\t", fmt.Sprintf("%+.2f", ltcBitstampKoineksGap), "$\t", fmt.Sprintf("%+.2f", ltcBitstampKoineksGapPercentage), "%")
+
+	fmt.Println("---")
+	fmt.Println("LTC (Koinim/Koineks):\t", fmt.Sprintf("%+.2f", ltcKoinimKoineksGapTRY), "₺\t", fmt.Sprintf("%+.2f", ltcKoinimKoineksGapPercentageTRY), "%")
 
 	fmt.Println("***\n\t\t\t PRICE\t\t USD-EQUIVALENT")
 	fmt.Println("ETH (Koineks):\t\t", strconv.FormatFloat(ethKoineksTRY, 'f', 2, 64), "₺\t", strconv.FormatFloat(ethKoineksUSD, 'f', 2, 64), "$")
@@ -138,10 +171,13 @@ func requestBundle() Display {
 	fmt.Println("ETH (Bitstamp):\t\t", strconv.FormatFloat(ethBitstampUSD, 'f', 2, 64), "$\t", strconv.FormatFloat(ethBitstampUSD, 'f', 2, 64), "$")
 
 	fmt.Println("---\n\t\t\t GAP\t\t PERCENTAGE")
-	fmt.Println("ETH (Bitfinex/Koineks):\t", strconv.FormatFloat(ethBitfinexKoineksGap, 'f', 2, 64), "$\t", strconv.FormatFloat(ethBitfinexKoineksGapPercentage, 'f', 2, 64), "%")
-	fmt.Println("ETH (Bitfinex/BTCTurk):\t", strconv.FormatFloat(ethBitfinexBtcturkGap, 'f', 2, 64), "$\t", strconv.FormatFloat(ethBitfinexBtcturkGapPercentage, 'f', 2, 64), "%")
-	fmt.Println("ETH (Bitstamp/Koineks):\t", strconv.FormatFloat(ethBitstampKoineksGap, 'f', 2, 64), "$\t", strconv.FormatFloat(ethBitstampKoineksGapPercentage, 'f', 2, 64), "%")
-	fmt.Println("ETH (Bitstamp/BTCTurk):\t", strconv.FormatFloat(ethBitstampBtcturkGap, 'f', 2, 64), "$\t", strconv.FormatFloat(ethBitstampBtcturkGapPercentage, 'f', 2, 64), "%")
+	fmt.Println("ETH (Bitfinex/Koineks):\t", fmt.Sprintf("%+.2f", ethBitfinexKoineksGap), "$\t", fmt.Sprintf("%+.2f", ethBitfinexKoineksGapPercentage), "%")
+	fmt.Println("ETH (Bitfinex/BTCTurk):\t", fmt.Sprintf("%+.2f", ethBitfinexBtcturkGap), "$\t", fmt.Sprintf("%+.2f", ethBitfinexBtcturkGapPercentage), "%")
+	fmt.Println("ETH (Bitstamp/Koineks):\t", fmt.Sprintf("%+.2f", ethBitstampKoineksGap), "$\t", fmt.Sprintf("%+.2f", ethBitstampKoineksGapPercentage), "%")
+	fmt.Println("ETH (Bitstamp/BTCTurk):\t", fmt.Sprintf("%+.2f", ethBitstampBtcturkGap), "$\t", fmt.Sprintf("%+.2f", ethBitstampBtcturkGapPercentage), "%")
+	
+	fmt.Println("---")
+	fmt.Println("ETH (Koineks/BTCTurk):\t", fmt.Sprintf("%+.2f", ethKoineksBtcturkGapTRY), "₺\t", fmt.Sprintf("%+.2f", ethKoineksBtcturkGapPercentageTRY), "%")
 	fmt.Println("***")
 
 	return display
